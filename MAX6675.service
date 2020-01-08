@@ -1,0 +1,12 @@
+[Unit]
+Description=MAX6675 Thermocouple Sensor
+
+[Service]
+User=root
+Restart=always
+StartLimitInterval=60
+StartLimitBurst=3
+ExecStart=/usr/local/bin/MAX6675-temp.py
+
+[Install]
+WantedBy=multi-user.target

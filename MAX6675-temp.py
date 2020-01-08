@@ -31,6 +31,13 @@ import time
 import Adafruit_GPIO.SPI as SPI
 import MAX6675.MAX6675 as MAX6675
 
+from subprocess import call
+
+SENSOR_FOLDER = '/run/sensors/'
+SENSOR_NAME = 'max6675' # lowercase
+LOGFILE = SENSOR_FOLDER + SENSOR_NAME + '/last'
+
+call(["mkdir", "-p", SENSOR_FOLDER + SENSOR_NAME])
 
 # Define a function to convert celsius to fahrenheit.
 def c_to_f(c):
@@ -65,6 +72,11 @@ sensor = MAX6675.MAX6675(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 # Loop printing measurements every second.
 print 'Press Ctrl-C to quit.'
 while True:
-	temp = sensor.readTempC()
-	print 'Thermocouple Temperature: {0:0.3F}°C'.format(temp, c_to_f(temp))
-	time.sleep(1.0)
+  temp = sensor.readTempC()
+  # print 'Thermocouple Temperature: {0:0.3F}°C'.format(temp, c_to_f(temp))
+  output_string =  'temperature_degC{sensor="' + SENSOR_NAME.upper() + '"} ' + str(temp) + '\n'
+  logfilehandle = open(LOGFILE, "w",1)
+  logfilehandle.write(output_string)
+  logfilehandle.close()
+
+  time.sleep(1.0)
